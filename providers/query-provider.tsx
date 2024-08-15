@@ -31,6 +31,7 @@ function getQueryClient() {
     return browserQueryClient;
   }
 }
+
 type Props = {
   children: React.ReactNode;
 };
