@@ -1,4 +1,4 @@
-import { insertAccountSchema } from "@/db/schema";
+import { insertCategorySchema } from "@/db/schema";
 import { z } from "zod";
 
 import { Loader2 } from "lucide-react";
@@ -12,28 +12,29 @@ import {
 
 import { useConfirm } from "@/hooks/use-confirm";
 
-import { useOpenAccount } from "@/features/accounts/hooks/use-open-account";
-import { AccountForm } from "@/features/accounts/components/account-form";
-import { useGetAccount } from "@/features/accounts/api/use-get-account";
-import { useEditAccount } from "@/features/accounts/api/use-edit-account";
-import { useDeleteAccount } from "@/features/accounts/api/use-delete-account";
+import { CategoryForm } from "@/features/categories/components/category-form";
 
-const formSchema = insertAccountSchema.pick({
+import { useOpenCategory } from "@/features/categories/hooks/use-open-category";
+import { useGetCategory } from "@/features/categories/api/use-get-category";
+import { useEditCategory } from "@/features/categories/api/use-edit-category";
+import { useDeleteCategory } from "@/features/categories/api/use-delete-category";
+
+const formSchema = insertCategorySchema.pick({
   name: true,
 });
 
 type FormValues = z.input<typeof formSchema>;
 
 export const EditAccountSheet = () => {
-  const { isOpen, onClose, id } = useOpenAccount();
+  const { isOpen, onClose, id } = useOpenCategory();
   const [ConfirmDialog, confirm] = useConfirm(
     "Are you sure?",
     "You are about to delete this transaction."
   );
 
-  const accountQuery = useGetAccount(id);
-  const editMutation = useEditAccount(id);
-  const deleteMutation = useDeleteAccount(id);
+  const accountQuery = useGetCategory(id);
+  const editMutation = useEditCategory(id);
+  const deleteMutation = useDeleteCategory(id);
 
   const isPending = editMutation.isPending || deleteMutation.isPending;
 
@@ -81,7 +82,7 @@ export const EditAccountSheet = () => {
               <Loader2 className="size-4 text-muted-foreground animate-spin" />
             </div>
           ) : (
-            <AccountForm
+            <CategoryForm
               id={id}
               onSubmit={onSubmit}
               disabled={isPending}
