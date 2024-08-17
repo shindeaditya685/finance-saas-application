@@ -15,6 +15,13 @@
       "when": 1723787538181,
       "tag": "0001_cultured_enchantress",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1723872989383,
+      "tag": "0002_living_dark_phoenix",
+      "breakpoints": true
     }
   ]
 }
