@@ -188,9 +188,11 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      const transactionsToDelete = db.$with("transactions_to_delete").as(
+      const transactionsToDelete = db.$with("tranasactions_to_delete").as(
         db
-          .select({ id: transactions.id })
+          .select({
+            id: transactions.id,
+          })
           .from(transactions)
           .innerJoin(accounts, eq(transactions.accountId, accounts.id))
           .where(
@@ -205,7 +207,10 @@ const app = new Hono()
         .with(transactionsToDelete)
         .delete(transactions)
         .where(
-          inArray(transactions.id, sql`select id from ${transactionsToDelete}`)
+          inArray(
+            transactions.id,
+            sql`(select id from ${transactionsToDelete})`
+          )
         )
         .returning({
           id: transactions.id,
@@ -290,9 +295,11 @@ const app = new Hono()
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-      const transactionsToDelete = db.$with("transactions_to_delete").as(
+      const transactionsToDelete = db.$with("tranasactions_to_delete").as(
         db
-          .select({ id: transactions.id })
+          .select({
+            id: transactions.id,
+          })
           .from(transactions)
           .innerJoin(accounts, eq(transactions.accountId, accounts.id))
           .where(and(eq(transactions.id, id), eq(accounts.userId, auth.userId)))
@@ -302,7 +309,10 @@ const app = new Hono()
         .with(transactionsToDelete)
         .delete(transactions)
         .where(
-          inArray(transactions.id, sql`select id from ${transactionsToDelete}`)
+          inArray(
+            transactions.id,
+            sql`(select id from ${transactionsToDelete})`
+          )
         )
         .returning({
           id: transactions.id,

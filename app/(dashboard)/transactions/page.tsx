@@ -5,7 +5,7 @@ import { Loader2, Plus } from "lucide-react";
 import { useNewTransaction } from "@/features/transactions/hooks/use-new-transaction";
 
 import { useGetTransactions } from "@/features/transactions/api/use-get-transactions";
-import { useBulkDeleteTransactions } from "@/features/transactions/api/use-bulk-create-transactions";
+import { useBulkDeleteTransactions } from "@/features/transactions/api/use-bulk-delete-transactions";
 
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/data-table";
@@ -13,8 +13,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { columns } from "./columns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useState } from "react";
+import { UploadButton } from "./upload-button";
+
+enum VARIANTS {
+  LIST = "LIST",
+  IMPORT = "IMPORT",
+}
+const INITIAL_IMPORT_RESULTS = {
+  data: [],
+  errors: [],
+  meta: {},
+};
 
 const TransactionPage = () => {
+  const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
+
+  const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
+    setVariant(VARIANTS.IMPORT);
+  };
+
   const newTransaction = useNewTransaction();
   const deleteTransactions = useBulkDeleteTransactions();
   const transactionsQuery = useGetTransactions();
@@ -40,6 +58,14 @@ const TransactionPage = () => {
     );
   }
 
+  if (variant === VARIANTS.IMPORT) {
+    return (
+      <>
+        <div>This is a screen for import.</div>
+      </>
+    );
+  }
+
   return (
     <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
       <Card className="border-none drop-shadow-sm">
@@ -47,14 +73,17 @@ const TransactionPage = () => {
           <CardTitle className="text-xl line-clamp-1">
             Transaction History
           </CardTitle>
-          <Button size="sm" onClick={newTransaction.onOpen}>
-            <Plus className="size-4 mr-2" />
-            Add new
-          </Button>
+          <div className="flex items-center gap-x-2">
+            <Button size="sm" onClick={newTransaction.onOpen}>
+              <Plus className="size-4 mr-2" />
+              Add new
+            </Button>
+            <UploadButton onUpload={onUpload} />
+          </div>
         </CardHeader>
         <CardContent>
           <DataTable
-            filterKey="name"
+            filterKey="payee"
             columns={columns}
             data={transactions}
             onDelete={(row) => {

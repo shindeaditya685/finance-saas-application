@@ -11,7 +11,7 @@ type RequestType = InferRequestType<
   (typeof client.api.transactions)["bulk-create"]["$post"]
 >["json"];
 
-export const useBulkDeleteTransactions = () => {
+export const useBulkCreateTransactions = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
@@ -22,7 +22,7 @@ export const useBulkDeleteTransactions = () => {
       return await response.json();
     },
     onSuccess: () => {
-      toast.success("Transactions create");
+      toast.success("Transactions created");
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       // TODO: Also invalidate summary
     },
