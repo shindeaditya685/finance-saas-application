@@ -15,12 +15,13 @@ import { columns } from "./columns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { UploadButton } from "./upload-button";
+import ImportCard from "./import-card";
 
 enum VARIANTS {
   LIST = "LIST",
   IMPORT = "IMPORT",
 }
-const INITIAL_IMPORT_RESULTS = {
+export const INITIAL_IMPORT_RESULTS = {
   data: [],
   errors: [],
   meta: {},
@@ -28,9 +29,16 @@ const INITIAL_IMPORT_RESULTS = {
 
 const TransactionPage = () => {
   const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
+  const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
 
   const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
+    setImportResults(results);
     setVariant(VARIANTS.IMPORT);
+  };
+
+  const onCancelImport = () => {
+    setImportResults(INITIAL_IMPORT_RESULTS);
+    setVariant(VARIANTS.LIST);
   };
 
   const newTransaction = useNewTransaction();
@@ -61,7 +69,11 @@ const TransactionPage = () => {
   if (variant === VARIANTS.IMPORT) {
     return (
       <>
-        <div>This is a screen for import.</div>
+        <ImportCard
+          data={importResults.data}
+          onCancel={onCancelImport}
+          onSubmit={() => {}}
+        />
       </>
     );
   }
@@ -73,8 +85,12 @@ const TransactionPage = () => {
           <CardTitle className="text-xl line-clamp-1">
             Transaction History
           </CardTitle>
-          <div className="flex items-center gap-x-2">
-            <Button size="sm" onClick={newTransaction.onOpen}>
+          <div className="flex flex-col lg:flex-row gap-y-2 items-center gap-x-2">
+            <Button
+              className="w-full lg:w-auto"
+              size="sm"
+              onClick={newTransaction.onOpen}
+            >
               <Plus className="size-4 mr-2" />
               Add new
             </Button>
