@@ -142,7 +142,8 @@ const app = new Hono().get(
             Number
           ),
         expenses:
-          sql`SUM(CASE WHEN ${transactions.amount} < 0 THEN ${transactions.amount} ELSE 0 END)`.mapWith(
+          // ABS added beacuse in graph i dont want below the x axis i want above
+          sql`SUM(CASE WHEN ${transactions.amount} < 0 THEN ABS(${transactions.amount}) ELSE 0 END)`.mapWith(
             Number
           ),
       })
