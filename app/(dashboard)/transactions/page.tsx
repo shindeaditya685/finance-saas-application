@@ -1,43 +1,40 @@
 "use client";
 
+import { useState } from "react";
 import { Loader2, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 import { useNewTransaction } from "@/features/transactions/hooks/use-new-transaction";
-
 import { useGetTransactions } from "@/features/transactions/api/use-get-transactions";
 import { useBulkDeleteTransactions } from "@/features/transactions/api/use-bulk-delete-transactions";
+import { useBulkCreateTransactions } from "@/features/transactions/api/use-bulk-create-transactions";
+import { useSelectAccount } from "@/features/accounts/hooks/use-select-account";
 
 import { transactions as transactionSchema } from "@/db/schema";
 
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { columns } from "./columns";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useState } from "react";
 import { UploadButton } from "./upload-button";
 import ImportCard from "./import-card";
-import { useSelectAccount } from "@/features/accounts/hooks/use-select-account";
-import { toast } from "sonner";
-import { useBulkCreateTransactions } from "@/features/transactions/api/use-bulk-create-transactions";
+import { ImportResult, INITIAL_IMPORT_RESULTS } from "./importTypes";
 
 enum VARIANTS {
   LIST = "LIST",
   IMPORT = "IMPORT",
 }
-export const INITIAL_IMPORT_RESULTS = {
-  data: [],
-  errors: [],
-  meta: {},
-};
 
 const TransactionPage = () => {
   const [AccountDialog, confirm] = useSelectAccount();
   const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
-  const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
+  const [importResults, setImportResults] = useState<ImportResult>(
+    INITIAL_IMPORT_RESULTS
+  );
 
-  const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
+  const onUpload = (results: ImportResult) => {
     setImportResults(results);
     setVariant(VARIANTS.IMPORT);
   };
